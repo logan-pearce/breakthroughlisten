@@ -160,6 +160,9 @@ quant_median,quant_lo,quant_hi = np.array([]),np.array([]),np.array([])
 count = 0
 start = time.time()
 
+if rank==0:
+    print 'Starting MCMC...'
+
 for i in range(len(mylist))[0:5]:
     count=count+1
     post,quant,accept_rate = sampler(prob,mu_init=dist[i],omega=parallax[i]/1000,sigma=para_sigma[i]/1000,nsamples=nsamples,proposal_width=1.0)
@@ -179,4 +182,18 @@ t.write(str(rank)+'_finalarray_mpi.csv', format='csv',overwrite=True)
 
 end = time.time()
 print 'Rank ',rank,' took ',(end - start),' s'
+
+################################ Collect all the arrays into one file ########################################
+if rank ==0:
+    finalarray = np.loadtxt('0_finalarray_mpi.csv',delimiter=',',skiprows=1)
+    for i in range(1,ncor):
+        print i
+        a = np.loadtxt(str(i)+'_finalarray_mpi.csv',delimiter=',',skiprows=1)
+        finalarray = np.vstack ([finalarray,a])
+    print finalarray.shape
+    t = Table([finalarray[:,0], finalarray[:,1], finalarray[:,2], finalarray[:,3], finalarray[:,4], finalarray[:,5], finalarray[:,6]], \
+                  names=('index', 'dist', 'parallax','para_sigma', 'quant_lo', 'quant_median', 'quant_hi'))
+    t.write('final_mcmc_output.csv', format='csv',overwrite=True)
+
+    os.system('rm *_finalarray_mpi.csv')
     
