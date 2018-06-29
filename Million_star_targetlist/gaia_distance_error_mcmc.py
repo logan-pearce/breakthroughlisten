@@ -21,8 +21,8 @@
 #        this script
 #
 # From the terminal, execute as follows:
-#   mpiexec -n xx python grand_step3.py path_to_image_file
-# Where xx is number of cores and path to image file is the absolute path beginning at the home directory.
+#   mpiexec -n xx python gaia_distance_extinction.py  
+# Where xx is number of cores.
 #
 # If running on TACC, write an sbatch script with the following parameters:
 #   #SBATCH -N 1
@@ -124,35 +124,15 @@ number = float(index.shape[0]/ncor)
 # For ~ 200,000 sources, the number is 4166.6875, so each process gets 4166-4167 sources to chew on.
 #print rank,index[number*rank:number*(rank+1)]
 
-exec 'mylist = index[%s:%s]' %(number*rank,number*(rank+1))
+#exec 'mylist = index[%s:%s]' %(number*rank,number*(rank+1))
 
 # Now each rank pulls out their piece of the puzzle:
-#parallax = parallax[np.int_(mylist)]
-#para_sigma = para_sigma[np.int_(mylist)]
-#dist = dist[np.int_(mylist)]
 
 parallax = parallax[number*rank:number*(rank+1)]
 para_sigma = para_sigma[number*rank:number*(rank+1)]
 dist = dist[number*rank:number*(rank+1)]
 myindex = index[number*rank:number*(rank+1)]
 
-'''if rank==0:
-    print 'Rank 0 is doing ',myindex
-elif rank==1:
-    print 'Rank 1 is doing ',myindex
-elif rank==2:
-    print 'Rank 2 is doing ',myindex
-elif rank==3:
-    print 'Rank 3 is doing ',myindex
-
-if rank==0:
-    print 'Rank 0 is doing ',myindex.shape
-elif rank==1:
-    print 'Rank 1 is doing ',myindex.shape
-elif rank==2:
-    print 'Rank 2 is doing ',myindex.shape
-elif rank==3:
-    print 'Rank 3 is doing ',myindex.shape'''
 
 
 ########### Start the MCMC for loop: ################
@@ -163,7 +143,7 @@ start = time.time()
 if rank==0:
     print 'Starting MCMC...'
 
-for i in range(len(mylist))[0:5]:
+for i in range(len(myindex)):
     count=count+1
     post,quant,accept_rate = sampler(prob,mu_init=dist[i],omega=parallax[i]/1000,sigma=para_sigma[i]/1000,nsamples=nsamples,proposal_width=1.0)
     quant_lo=np.append(quant_lo,quant[0])
@@ -176,12 +156,14 @@ for i in range(len(mylist))[0:5]:
 
 
 # Write it out done.
-t = Table([myindex[0:5], dist[0:5], parallax[0:5], para_sigma[0:5], quant_lo, quant_median, quant_hi], \
+t = Table([myindex, dist, parallax, para_sigma, quant_lo, quant_median, quant_hi], \
                   names=('index', 'dist', 'parallax','para_sigma', 'quant_lo', 'quant_median', 'quant_hi'))
 t.write(str(rank)+'_finalarray_mpi.csv', format='csv',overwrite=True)
 
 end = time.time()
 print 'Rank ',rank,' took ',(end - start),' s'
+
+comm.barrier()
 
 ################################ Collect all the arrays into one file ########################################
 if rank ==0:
@@ -195,5 +177,6 @@ if rank ==0:
                   names=('index', 'dist', 'parallax','para_sigma', 'quant_lo', 'quant_median', 'quant_hi'))
     t.write('final_mcmc_output.csv', format='csv',overwrite=True)
 
+# Clean up:
     os.system('rm *_finalarray_mpi.csv')
     
