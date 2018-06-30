@@ -122,81 +122,7 @@ def init(hdf5file):
         step,
         hw,
         points,
-        s
-    )
-
-
-def reddening2(vlong, vlat, distance, ulong=u.deg, ulat=u.deg, frame='galactic', step_pc=5):
-    """Calculate Reddening versus distance from Sun for one particular distance, lat and long.
-
-    Args:
-        vlong (str or double): Longitude value.
-        ulong (str): Longitude unit used in :class:`SkyCoord`.
-        vlat (str or double): Latitude value.
-        ulat (str): Latitude unit used in :class:`SkyCoord`.
-        frame (str): Galactic, icrs ... values supported by :class:`SkyCoord`.
-
-    Kwargs:
-        step_pc (int): Incremental distance in parsec
-
-    Returns:
-        array: Parsec values.
-        array: E(B-V) value obtain with integral of linear extrapolation.
-
-    """
-    # Calculate the position for 1pc
-    sc = SkyCoord(
-        vlong,
-        vlat,
-        distance=1 * u.pc,
-        unit=(ulong, ulat),
-        frame=frame)
-    coords_xyz = sc.transform_to('galactic').represent_as('cartesian').get_xyz().value
-
-    # Find the number of parsec I can calculate before go out the cube
-    # (exclude divide by 0)
-    not0 = np.where(coords_xyz != 0)
-    max_pc = np.amin(
-        np.abs(
-            np.take(max_axes, not0) / np.take(coords_xyz, not0)))
-
-    # Calculate all coordinates to interpolate (use step_pc)
-    distances = np.arange(0, max_pc, step_pc)
-    sc = SkyCoord(
-        vlong,
-        vlat,
-        distance=distance,
-        unit=(ulong, ulat, 'pc'),
-        frame=frame)
-    sc = sc.transform_to('galactic').represent_as('cartesian')
-    #coords_xyz = np.array([coord.get_xyz().value for coord in sc])
-    sc_xyz = sc.get_xyz().value
-
-    # linear interpolation with coordinates
-    interpolation = spi.interpn(
-        axes,
-        cube,
-        sc_xyz,
-        method='linear')
-    xvalue = np.around(distance)
-    yvalue = interpolation * step_pc
-
-    # errors
-    '''xerrors = spi.interpn(
-        axes,
-        cubeXErr,
-        coords_xyz,
-        method='linear')
-    yerrors = spi.interpn(
-        axes,
-        cubeYErr,
-        coords_xyz,
-        method='linear')'''
-
-    return (xvalue,
-        np.around(yvalue, decimals=3))
-        #np.around(xerrors, decimals=0),
-        #np.around(yerrors, decimals=3))
+        s)
 
 #######################################################################################################
 #################################### Establish parallel process #######################################
@@ -215,9 +141,6 @@ ncor = size
 
 if rank==0:
     print "Importing data..."
-
-# Initialisation
-headers, cube, cubeXErr, cubeYErr, axes, min_axes, max_axes, step, hw, points, s = init(hdf5file)
 
 k = np.loadtxt(filename,skiprows=1,delimiter=',')
 index = k[:,0]
@@ -245,33 +168,41 @@ dist = dist[number*rank:number*(rank+1)]
 myindex = index[number*rank:number*(rank+1)]
 
 
-########### Start the calculation for loop: ################
+# Initialisation
+headers, cube, cubeXErr, cubeYErr, axes, min_axes, max_axes, step, hw, points, s = init(hdf5file)
 
-extinction = np.array([])
-count=0
-start = time.time()
+##### Compute sky coords from galactic to cartesian:
+sc = SkyCoord(
+        l,
+        b,
+        distance=dist,
+        unit=(u.deg, u.deg, 'pc'),
+        frame='galactic')
 
+sc = sc.transform_to('galactic').represent_as('cartesian')
+sc_xyz = sc.get_xyz().value
+
+###### Start loop:
 if rank==0:
     print 'Starting Computation...'
 
-for i in range(len(l))[0:5]:
-    print 'Rank ',rank,i
-    count=count+1
-    x,y = reddening2(l[i], b[i], dist[i])
+step_pc=5
+start=time.time()
+extinction = np.array([])
+count=0
+for i in range(len(l)):
+    count = count+1
+    interpolation = spi.interpn(axes,cube,sc_xyz[:,i],method='linear')
+    y = interpolation * step_pc
     extinction = np.append(extinction,y[0])
+    mod=count%100000
+    if mod==0 and rank==0:
+        print count
 
-    mod=count%10000
-    if mod==0:
-        print 'Rank ',rank,' has done ',count,' loops'
-        os.system('touch ext_count_'+str(count)+'.txt.')
-
-        # Write it out.
-        t = Table([myindex, dist, b, l, extinction], \
-                names=('index', 'dist', 'b','l', 'extinction'))
-        t.write(str(rank)+'_finalextinction_mpi.csv', format='csv',overwrite=True)
-print extinction
-
+    
 end = time.time()
+print end-start
+
 
 # Write it out done.
 t = Table([myindex, dist, b, l, extinction], \
@@ -285,13 +216,13 @@ print 'Rank ',rank,' took ',(end - start),' s'
 if rank ==0:
     finalarray = np.loadtxt('0_finalextinction_mpi.csv',delimiter=',',skiprows=1)
     for i in range(1,ncor):
-        print i
+        print 'Collecting output from Rank ',i
         a = np.loadtxt(str(i)+'_finalextinction_mpi.csv',delimiter=',',skiprows=1)
         finalarray = np.vstack ([finalarray,a])
-    print finalarray.shape
-    t = Table([myindex, dist, b, l, extinction], \
+    print "I've collected ",finalarray.shape
+    t = Table([finalarray[:,0], finalarray[:,1], finalarray[:,2], finalarray[:,3], finalarray[:,4]], \
                   names=('index', 'dist', 'b','l', 'extinction'))
     t.write('final_extinction_output.csv', format='csv',overwrite=True)
 
-    #os.system('rm *_finalextinction_mpi.csv')
+    os.system('rm *_finalextinction_mpi.csv')
     
