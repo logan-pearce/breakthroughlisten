@@ -1,1 +1,7 @@
-Workbooks and scripts for working with targets in the fields to be surveyed by MeerKAT
+Workbooks and scripts for working with targets in the fields to be surveyed by MeerKAT'
+
+
+NOTE --
+  All scripts in this directory involve conencting to the BL mySQL server.  To avoid publishing passwords, they make use 
+  of a config file.  For instructions on making and using the config files, go here: 
+  https://dev.mysql.com/doc/refman/8.0/en/option-files.html
