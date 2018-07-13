@@ -5,3 +5,8 @@ NOTE --
   All scripts in this directory involve conencting to the BL mySQL server.  To avoid publishing passwords, they make use 
   of a config file.  For instructions on making and using the config files, go here: 
   https://dev.mysql.com/doc/refman/8.0/en/option-files.html
+  
+07-13-2018:
+  Computing the distances, std dev, and temp/sptype for all the individual sources from the SQL database (ala 
+  "compute_distances_mhongoose.py etc) took entirely too long.  The script "compute_master_distances_teffs.py does the 
+  computations on the compute cluster side, then use send_to_sql.py to send the csv's to a whole new table on the SQL server.
