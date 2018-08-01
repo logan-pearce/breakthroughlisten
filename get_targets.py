@@ -81,9 +81,11 @@ def get_targets(ra,dec,ang_diam,conditions,database):
     index = range(len(ra))
     appended_data = [] 
     for r,d,i in zip(ra,dec,index):
+        # Construct SQL query for all objects which fall within a circle of specified radius:
         string = 'SELECT * FROM '+str(database)+' \
                     WHERE POWER((ra-('+str(r)+')),2) + POWER((decl - ('+str(d)+')),2) < '+str((ang_diam/2.)**2)+' \
                     AND '+str(conditions)+';'
+        # Execute query:
         dataframe = pd.read_sql(string, con=db)
         # store DataFrame in list
         appended_data.append(dataframe)
@@ -112,6 +114,7 @@ def find_exoplanets(ra,dec,ang_diam):
     # Convert to pandas df
     cols = e.colnames[0:len(e.colnames)-1]
     ee = e[cols].filled(-9999)
+    # Convert to pandas dataframe:
     e = ee.to_pandas()
     
     # Create array for results:
@@ -148,10 +151,13 @@ import argparse
 parser = argparse.ArgumentParser()
 # Required positional arguments:
 parser.add_argument("filename", help="the path to a csv file containing tuples of RA,Dec in decimal degrees")
-# Optional positional arguments"
-parser.add_argument("-o","--output_filename", help="csv name for file to output results.  default is targets_datetime.csv ex: targets-2018-08-01T14:32:59.txt")
-parser.add_argument("-d","--ang_diam", help="angular diameter of the beam in degrees.  default=0.8 deg, approx diameter of MeerKAT L-beam",type=float)
-parser.add_argument("-c","--conditions", help='selection criteria.  ex: "dist_c<100" returns objects with distance less than 100 pc \
+# Optional positional arguments:
+parser.add_argument("-o","--output_filename", help="csv name for file to output results.  default is targets_datetime.csv \
+                    ex: targets-2018-08-01T14:32:59.txt")
+parser.add_argument("-d","--ang_diam", help="angular diameter of the beam in degrees.  default=0.8 deg, approx diameter \
+                    of MeerKAT L-beam",type=float)
+parser.add_argument("-c","--conditions", help='selection criteria.  ex: "dist_c<100" returns objects with distance less \
+                    than 100 pc \
     (quotes are required around conditional argument).  default=no condition',type=str)
 parser.add_argument("-t","--table", help="name of table to pull results from.  default = 1M_target_list",type=str)
 
@@ -221,8 +227,9 @@ else:
     print 'Zero is not enough to write to a file, sadly...'
 
 ############### Write comment with details of query:
-comment='# Query performed on '+str(datetime.datetime.now())+' on input file '+str(filename)+' with beam size '+str(ad)+', with conditions '+str(conditions)+' \
-from table '+str(database)+'\n'
+comment='# Query performed on '+str(datetime.datetime.now())+' on input file '+str(filename)+' with beam size '+str(ad)+', \
+    with conditions '+str(conditions)+' \
+    from table '+str(database)+'\n'
 
 with open(output_filename,'r') as contents:
       save = contents.read()
