@@ -55,7 +55,7 @@
 #    python get_targets.py test.txt   <- Get all objects from the 1M target list that fall within all the
 #                            pointings for L-band sized beams
 #    python get_targets.py test.txt -c "dist_c < 100"   <- Get all objects out to a distance of 100 pcs
-#    python get_targets.py test.txt -c "sptype_c like '%G%'" -d 0.4 -t master_gaia_database   <- Get all SpType G stars
+#    python get_targets.py test.txt -c "sptype_c LIKE '%G%'" -d 0.4 -t master_gaia_database   <- Get all SpType G stars
 #                            that fall within an S-band sized beam (3 GHz) from the master list of all high quality
 #                            Gaia sources
 
