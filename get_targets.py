@@ -33,7 +33,7 @@
 # positional arguments:
 #   filename             the path to a csv file containing tuples of RA,Dec in
 #                        decimal degrees
-
+#
 # optional arguments:
 #  -h, --help            show this help message and exit
 #  -o OUTPUT_FILENAME, --output_filename OUTPUT_FILENAME
