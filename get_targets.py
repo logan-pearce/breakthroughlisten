@@ -78,19 +78,26 @@ def get_targets(ra,dec,ang_diam,conditions,database):
     Returns:
         Pandas dataframe of every object in the database meeting criteria
     """
-    index = range(len(ra))
-    appended_data = [] 
-    for r,d,i in zip(ra,dec,index):
-        # Construct SQL query for all objects which fall within a circle of specified radius:
+    if len(ra) == 1:
         string = 'SELECT * FROM '+str(database)+' \
-                    WHERE POWER((ra-('+str(r)+')),2) + POWER((decl - ('+str(d)+')),2) < '+str((ang_diam/2.)**2)+' \
+                    WHERE POWER((ra-('+str(ra.values[0])+')),2) + POWER((decl - ('+str(dec.values[0])+')),2) < \
+                    '+str((ang_diam/2.)**2)+' \
                     AND '+str(conditions)+';'
-        # Execute query:
-        dataframe = pd.read_sql(string, con=db)
-        # store DataFrame in list
-        appended_data.append(dataframe)
-        print "I've done ",i+1," of ",len(ra)," total pointings"
-    targets = pd.concat(appended_data, axis=0)
+        targets = pd.read_sql(string, con=db)
+        print "I've done 1 of ",len(ra)," total pointings and found ",len(targets)," objects"
+    else:
+        index = range(len(ra))
+        appended_data = [] 
+        for r,d,i in zip(ra,dec,index):
+            string = 'SELECT * FROM '+str(database)+' \
+                WHERE POWER((ra-('+str(r)+')),2) + POWER((decl - ('+str(d)+')),2) < '+str((ang_diam/2.)**2)+' \
+                AND '+str(conditions)+';'
+            dataframe = pd.read_sql(string, con=db)
+            # store DataFrame in list
+            appended_data.append(dataframe)
+            print "I've done ",i+1," of ",len(ra)," total pointings and found ",len(dataframe)," objects"
+        targets = pd.concat(appended_data, axis=0)
+        print 'I found ',len(targets),' total objects within those pointings.'
     return targets
 
 def find_exoplanets(ra,dec,ang_diam):
@@ -114,7 +121,6 @@ def find_exoplanets(ra,dec,ang_diam):
     # Convert to pandas df
     cols = e.colnames[0:len(e.colnames)-1]
     ee = e[cols].filled(-9999)
-    # Convert to pandas dataframe:
     e = ee.to_pandas()
     
     # Create array for results:
@@ -151,13 +157,10 @@ import argparse
 parser = argparse.ArgumentParser()
 # Required positional arguments:
 parser.add_argument("filename", help="the path to a csv file containing tuples of RA,Dec in decimal degrees")
-# Optional positional arguments:
-parser.add_argument("-o","--output_filename", help="csv name for file to output results.  default is targets_datetime.csv \
-                    ex: targets-2018-08-01T14:32:59.txt")
-parser.add_argument("-d","--ang_diam", help="angular diameter of the beam in degrees.  default=0.8 deg, approx diameter \
-                    of MeerKAT L-beam",type=float)
-parser.add_argument("-c","--conditions", help='selection criteria.  ex: "dist_c<100" returns objects with distance less \
-                    than 100 pc \
+# Optional positional arguments"
+parser.add_argument("-o","--output_filename", help="csv name for file to output results.  default is targets_datetime.csv ex: targets-2018-08-01T14:32:59.txt")
+parser.add_argument("-d","--ang_diam", help="angular diameter of the beam in degrees.  default=0.8 deg, approx diameter of MeerKAT L-beam",type=float)
+parser.add_argument("-c","--conditions", help='selection criteria.  ex: "dist_c<100" returns objects with distance less than 100 pc \
     (quotes are required around conditional argument).  default=no condition',type=str)
 parser.add_argument("-t","--table", help="name of table to pull results from.  default = 1M_target_list",type=str)
 
@@ -201,7 +204,6 @@ db = MySQLdb.connect(host='104.154.94.28',db='loganp',\
 ############### Get all targets in the database within beam pointings:
 print 'Retrieving targets...'
 targets = get_targets(RA,Dec,ad,conditions,database)
-print 'I found ',len(targets),' total objects within those pointings.'
 
 print 'Writing out targets to file...'
 targets.to_csv(output_filename,index=False)
@@ -227,9 +229,8 @@ else:
     print 'Zero is not enough to write to a file, sadly...'
 
 ############### Write comment with details of query:
-comment='# Query performed on '+str(datetime.datetime.now())+' on input file '+str(filename)+' with beam size '+str(ad)+', \
-    with conditions '+str(conditions)+' \
-    from table '+str(database)+'\n'
+comment='# Query performed on '+str(datetime.datetime.now())+' on input file '+str(filename)+' with beam size '+str(ad)+', with conditions '+str(conditions)+' \
+from table '+str(database)+'\n'
 
 with open(output_filename,'r') as contents:
       save = contents.read()
