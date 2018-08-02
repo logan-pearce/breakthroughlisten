@@ -214,7 +214,7 @@ exoplanets=find_exoplanets(RA,Dec,ad)
 print 'I found ',len(exoplanets),' known exoplanet hosts within these pointings.'
 if len(exoplanets)!=0:
     print 'Writing exoplanet hosts to file...'
-    exoplanets.to_csv(output_filename.split('.')[0]+'_exoplanet_hosts.csv')
+    exoplanets.to_csv(output_filename.split('.')[0]+'_exoplanet_hosts.csv',index=False)
 else:
     print 'Zero is not enough to write to a file, sadly...'
 
@@ -224,7 +224,7 @@ pulsars=find_pulsars(RA,Dec,ad)
 print 'I found ',len(pulsars),' pulsars within these pointings.'
 if len(exoplanets)!=0:
     print 'Writing pulsars to file...'
-    exoplanets.to_csv(output_filename.split('.')[0]+'_pulsars.csv')
+    exoplanets.to_csv(output_filename.split('.')[0]+'_pulsars.csv',index=False)
 else:
     print 'Zero is not enough to write to a file, sadly...'
 
