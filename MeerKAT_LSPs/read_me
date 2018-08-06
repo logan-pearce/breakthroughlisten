@@ -1,1 +1,3 @@
-Specifics of MeerKAT LSPs
+These notebooks outline the process and decisions I used to generate the 1-Million star target list.  .csv files with 
+the name "_targets.csv" are lists of individual specific pointings I used to create the named projects portions of the 
+list.
