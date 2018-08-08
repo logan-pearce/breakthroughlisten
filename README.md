@@ -6,19 +6,25 @@ This project is to indentify a target list of 1 million stars BL can expect to o
 
 ## Products
 The files within this GitHub repo consist of three general parts:
-* Tutorials which demonstrate the need for making data quality filters when working with Gaia DR2 data, and justifying the quality cut decisions we made for this project
-* Notebooks and LSP target lists which were used to draw the objects on our final 1.2M object target list.
-* Plots and scripts for working with the final 1.2M object target list.
+* Tutorials which demonstrate the need for making data quality filters when working with Gaia DR2 data and justifying the quality cut decisions we made for this project, and how to use Gaia parallaxes to compute the distance to single objects (adapted from Bailer-Jones et. al. 2015).
+* Notebooks and LSP target lists which were used to draw the objects on our final 1.2M object target list (meerkat_lsps folder).  Also included are a pdf table summary of the LSPs used in this analysis, with detailed notes of decisions and assumptions used to generate the final list (large-survey-programs.pdf), and a pdf of SQL and ADQL cheat sheet used in this project (sql-queries-bl.pdf).
+* Plots and scripts for working with the final 1.2M object target list, including get_targets.py.
 
 The complete target list .csv file is too large to hosted on GitHub.  It can be found at this public dropbox link: https://www.dropbox.com/s/yklypkckc6m2xx1/1_million_sample_complete.csv?dl=0
 
+![pointings](pointings.png)
+2d histogram of all objects in the 32M object high-quality Gaia subsample within MeerKAT's field of view (grey), overlaid with all anticipated LSP pointings or fields which went into this analysis.
+
 
 ## Author
-The project was completed by Logan Pearce, under the mentorship of Howard Isaacson, during the Berkeley SETI Research Center internship in summer 2018 (https://seti.berkeley.edu/Internship.html)
+The project was completed by Logan Pearce (http://www.loganpearcescience.com), under the mentorship of Howard Isaacson, during the Berkeley SETI Research Center internship in summer 2018 (https://seti.berkeley.edu/Internship.html)
 
 
 ## Acknowledgments
-This project made use of:
+
+This work has made use of data from the European Space Agency (ESA) mission Gaia (https://www.cosmos.esa.int/gaia), processed by the Gaia Data Processing and Analysis Consortium (DPAC, https://www.cosmos.esa.int/web/gaia/dpac/consortium). Funding for the DPAC has been provided by national institutions, in particular the institutions participating in the Gaia Multilateral Agreement.
+
+Software:
 numpy, astropy, pandas, matplotlib, MySQLdb, MySQL Connector/Python
 
 The author wishes to aknowledge to support of the Breakthrough Initiatives and BSRC for the opportunity and funding to come to Berekely and participate in this research; the mentorship of Howard Isaacson, Steve Croft, and Andrew Siemion; the assistance of Griffin Foster, Scott Ransom, and Matt Lebofsky for overcoming numerous sticking points.
