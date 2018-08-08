@@ -4,87 +4,18 @@
 Public link for 1 million star complete list csv: https://www.dropbox.com/s/yklypkckc6m2xx1/1_million_sample_complete.csv?dl=0
 
 
-# Project Title
+# Breakthrough Listen: Identifying 1 Million Stars for Targeted SETI Observations with MeerKAT
 
-One Paragraph of project description goes here
+Breakthrough Listen is the largest ever scientific research program aimed at finding evidence of civilizations beyond Earth  (https://breakthroughinitiatives.org/initiative/1).  BL will soon be conducting observations with the MeerKAT radio telescope in South Africa, in which it will survey 1 million stars for evidence of technosignatures from extraterrestrial intellegence.  The observations are commensal - BL will "piggyback" on MeerKATs large survey programs (LSPs).  While LSPs are conducting their primary science - such as observations of nearby galaxies, pulsar timing, deep extra-galactic surveys - BL will be surveying other nearby stars which fall into the primary beam of telescope.  
 
-## Getting Started
+This project is to indentify a target list of 1 million stars BL can expect to observe during commensal observations of MeerKAT.  We began with the 1.7 billion objects in the Gaia Data Release 2 catalog, and applied data quality filters to develop a subset of ~32 million high-quality Gaia objects from which to draw our targets.  We then determined the anticipated exact pointings for each LSP to the greatest extent possible, and which of those high-quality Gaia objects would fall within a the beam during those surveys.  We also included a "volume complete" sample - all high-quality Gaia objects out to 160 pc, which will accomodate any unanticipated pointings.  Lastly, we created the script "get_targets.py" which accepts a list of pointings and given parameters and returns all the targets BL could observe in those pointings.  This will be part of generating observing scripts when observations get underway.
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Prerequisites
 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
 ## Authors
+The project was completed by Logan Pearce, under the mentorship of Howard Isaacson, during the Berkeley SETI Research Center internship in summer 2018 (https://seti.berkeley.edu/Internship.html)
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
 
