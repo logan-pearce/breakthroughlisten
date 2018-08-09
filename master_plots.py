@@ -46,7 +46,7 @@ db = MySQLdb.connect(host='104.154.94.28',db='loganp',\
                      local_infile = 1)
 # Connect via MySQL Connector/Python:
 # db = mysql.connector.connect(option_files='/Users/loganpearce/.my.cnf',host='104.154.94.28',\
-#                              database='loganp')
+#                              database='loganp',autocommit=True,allow_local_infile=True)
 
 # Retrieve some columns from all objects in the SQL database:
 f = pd.read_sql("SELECT source_id,parallax,bp_rp,phot_g_mean_mag,ra,decl FROM master_gaia_database\
