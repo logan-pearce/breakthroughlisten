@@ -7,7 +7,8 @@
 #                                                                             #
 ###############################################################################
 #
-# This script takes in csv results from Gaia archive queries and computes the distance
+# This script takes in csv results from batched Gaia archive queries of "download_large_query.py
+# and computes the distance
 # estimates for each using the methods of Bailer-Jones 2015.  It computes the FWHM of
 # the distance estimate distribution, and computes the standard deviation of the distance
 # as sd = fwhm/2.355 (thus this estimate is only valid for distance posteriors that are
@@ -24,7 +25,7 @@
 #   text file EEM_dwarf_UBVIJHK_colors_Teff.txt from above url
 #
 # Input:
-#   csv files output from gaia_queries.py
+#   csv files output from download_large_queries.py
 #
 # Output:
 #   the same csv files with appended distance, teff, and sptype columns
