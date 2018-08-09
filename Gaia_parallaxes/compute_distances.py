@@ -144,7 +144,7 @@ for line in z:
     k['teff_val.c'] = tgb
     k['sptype.c'] = spt
 
-    k.to_csv(line.strip('.')[0]+'_c.csv')
+    k.to_csv(line.strip('.')[0]+'_c.csv',index=False)
     end=time.time()
     print 'The whole file took ',(end-start1)/60/60,' hrs'
     print ''
