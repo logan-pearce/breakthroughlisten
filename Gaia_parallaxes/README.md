@@ -1,4 +1,8 @@
 Files in this directory:
 * Computing distance with Gaia parallaxes tutorial.ipynb: Jupyter notebook walking through how to use Gaia parallaxes to estimate distance using Bayesian methodology.  Adapted from the methods and R code of Bailer-Jones et. al. 2015.
 * Data Quality and Gaia Archive tutorial.ipynb: Jupyter notebook exploring the impact that the precision of the parallax measurements have on the distance estimation from Gaia parallaxes.  Presents the rationale for the data quality filters applied in this project.  Adapted from Bailer-Jones et. al. 2015 and Gaia Collaboration 2018 (arXiv:1804.09378)
-* compute_distances.py: python script which 
+* download_large_queries.py: queries the Gaia archive in batches to retrieve all Gaia objects meeting the data quality filters of the data quality tutorial.  Each batch result contains 3M objects (the Gaia archive result limit) in order of descending parallax value.
+* compute_distances.py: takes in the result files from download_large_queries.py and for each object it computes the distance estimate, fwhm and std dev of distances, interpolates Teff (where applicable), and estimates SpType for objects with Teff values using the Mamajek model http://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt
+* Gaia_distance_error_mcmc.py: this script determines distance uncertainty using an mcmc to explore the distance posterior distribution and taking the 95% credible interval.  See the distance tutorial for more details.
+* Gaia_distance_extinction.py: the script can be used to estimate the amount of dust extinction to a source for use in estimating the absolute magnitude, using the line-of-sight dust model of Stilism (http://stilism.obspm.fr/).  Unfinished, computationally intensive.
+* send_to_sql.py: uploads the output of compute_distances.py to the BL SQL server database.
