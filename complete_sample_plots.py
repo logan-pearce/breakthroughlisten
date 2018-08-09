@@ -50,7 +50,7 @@ db = MySQLdb.connect(host='104.154.94.28',db='loganp',\
 # Using mysql connector/python:
 # import mysql.connector
 # db = mysql.connector.connect(option_files='/Users/loganpearce/.my.cnf',host='104.154.94.28',\
-#                              database='loganp')
+#                              database='loganp',autocommit=True,allow_local_infile=True)
 
 string = 'SELECT * FROM `1M_target_list` WHERE 1'
 k=pd.read_sql(string,con=db)
