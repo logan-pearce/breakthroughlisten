@@ -22,6 +22,7 @@
 
 import os
 import MySQLdb
+# import mysql.connector
 
 print 'Establishing MySQL connection'
 db = MySQLdb.connect
