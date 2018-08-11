@@ -24,11 +24,16 @@ import os
 import MySQLdb
 
 print 'Establishing MySQL connection'
-db = MySQLdb.connect(host='104.154.94.28',db='loganp',\
+db = MySQLdb.connect
+(
                      read_default_file="~/.my.cnf",\
                      autocommit=True,\
-                     local_infile = 1)
+                     local_infile = 1
+)
 cursor=db.cursor()
+
+# Connect via MySQL Connector/Python:
+# db = mysql.connector.connect(option_files='/Users/loganpearce/.my.cnf')
 
 # Make a list of the output csv files and read in the list
 #os.system('ls *_c.csv > list')
