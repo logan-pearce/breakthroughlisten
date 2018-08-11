@@ -197,13 +197,16 @@ Dec = filein.ix[:,1]
 print 'Connecting to SQL server...'
 # Using MySQLdb
 import MySQLdb
-db = MySQLdb.connect(host='104.154.94.28',db='loganp',\
+db = MySQLdb.connect
+(
                      read_default_file="~/.my.cnf",\
                      autocommit=True,\
-                     local_infile = 1)
+                     local_infile = 1
+)
+
 # Using mysql connector/python:
 # import mysql.connector
-# db = mysql.connector.connect(option_files='/Users/loganpearce/.my.cnf',host='104.154.94.28',\
+# db = mysql.connector.connect(option_files='/Users/loganpearce/.my.cnf',\
 #                              database='loganp',autocommit=True,allow_local_infile=True)
 
 ############### Get all targets in the database within beam pointings:
